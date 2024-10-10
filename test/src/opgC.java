@@ -59,7 +59,7 @@ public class opgC {
        }
 
     }
-    
+
     public static void main(String [] args){
         try {
             inLine = new BufferedReader(new InputStreamReader(System.in));

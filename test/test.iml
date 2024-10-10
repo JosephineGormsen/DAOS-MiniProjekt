@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="mssql-jdbc-7.0.0.jre10 (1)" level="application" />
+    <orderEntry type="library" name="mssql-jdbc-7.0.0.jre10" level="application" />
   </component>
 </module>
