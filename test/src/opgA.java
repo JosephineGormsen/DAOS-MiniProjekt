@@ -14,9 +14,9 @@ public class opgA {
 
             // Database connection setup
             String server = "localhost"; // Database server
-            String dbnavn = "karakterDB";    // Database name
+            String dbnavn = "DAOSMiniProjekt";    // Database name
             String login = "sa";          // Database login username
-            String password = "SQLpassword1234"; // Database login password
+            String password = "reallyStrongPwd123"; // Database login password
 
             // Load the JDBC driver
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");

@@ -13,41 +13,53 @@ public class opgC {
     static BufferedReader inLine;
 
     public static void selectEksamen(){
-        //Lav et java-program, der anvender JDBC. Via programmet skal du indtaste navnet på en
-        //given eksamen og en given termin. Programmet skal som resultat vise en liste af de
-        //studerende, der har deltaget i denne afvikling af denne eksamen i denne termin. Udover
-        //den studerendes navn og id, skal karakteren også være med i resultatet.
-
-        //select
-        //s.id as studerende_id,
-        //s.navn as studerende_navn,
-        //e.navn as eksamen_navn,
-        //ea.termin,
-        //ea.karakter
-        //
-        //FROM
-        //studerende s
-        //join eksamensAfvikling ea on s.id = ea.studerende_id
-        //join eksamen e on ea.eksamen_id = e_id
-        //where e.navn = ? and ea.termin = ?;
        try {
-            PreparedStatement prestmt = minConnection.prepareStatement("select s.id as studerende_id, s.navn as studerende_navn, e.navn as eksamen_navn, ea.termin, ea.karakter FROM studerende s join eksamensAfvikling ea on s.id = ea.studerende_id join eksamen e on ea.eksamen_id = e_id where e.navn = ? and ea.termin = ?;");
-            System.out.println("Indtast eksamens navn: ");
-            String eksamensNavn = inLine.readLine();
-             System.out.println("Indtast termin: ");
-            String termin = inLine.readLine();
-            prestmt.setString(1, eksamensNavn);
-            prestmt.setString(2, termin);
-            ResultSet res = prestmt.executeQuery();
-            while (res.next()) {
-                System.out.println("Studerende id: " + res.getInt("studerende_id") + " Studerende navn: " + res.getString("studerende_navn") + " Eksamen navn: " + res.getString("eksamen_navn") + " Termin: " + res.getString("termin") + " Karakter: " + res.getString("karakter"));
-            }
-        } catch (Exception e) {
-            System.out.println("fejl:  "+e.getMessage());
-        }
+           String sql = "SELECT \n" +
+                   "    s.studenterID,\n" +
+                   "    s.navn AS studerende_navn,\n" +
+                   "    e.navn AS eksamen_navn,\n" +
+                   "    ea.termin,\n" +
+                   "    ea.karakter\n" +
+                   "FROM \n" +
+                   "    studerende s\n" +
+                   "JOIN \n" +
+                   "    eksamensAfvikling ea ON s.studenterID = ea.fk_studerende \n" +
+                   "JOIN \n" +
+                   "    eksamen e ON ea.fk_eksamen = e.navn \n" +
+                   "WHERE \n" +
+                   "    e.navn = ? AND ea.termin = ?;";
+           PreparedStatement prestmt = minConnection.prepareStatement(sql);
+
+           System.out.println("Indtast eksamens navn: ");
+           String eksamensNavn = inLine.readLine();
+           System.out.println("Indtast termin: ");
+           String termin = inLine.readLine();
+
+              prestmt.setString(1, eksamensNavn);
+              prestmt.setString(2, termin);
+
+           ResultSet res = prestmt.executeQuery();
+           boolean hasResults = false;
+           while (res.next()) {
+               hasResults = true;
+               System.out.println("Studerende id: " + res.getInt("studenterID") +
+                       " Studerende navn: " + res.getString("studerende_navn") +
+                       " Eksamen navn: " + res.getString("eksamen_navn") +
+                       " Termin: " + res.getString("termin") +
+                       " Karakter: " + res.getString("karakter"));
+           }
+           if (!hasResults) {
+               System.out.println("Ingen resultater fundet.");
+           }
+           res.close();
+           prestmt.close();
+       } catch (Exception e) {
+           System.out.println("Fejl: " + e.getMessage());
+           e.printStackTrace();
+       }
+
     }
-
-
+    
     public static void main(String [] args){
         try {
             inLine = new BufferedReader(new InputStreamReader(System.in));
@@ -63,20 +75,13 @@ public class opgC {
                     ";user=" + login + ";password=" + password + ";");
             //minConnection = DriverManager.getConnection("jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=eksempeldb;user=sa;password=torben07;");
             stmt = minConnection.createStatement();
-            System.out.println("Indtast  ");
-            System.out.println("skriv eksamen for select eksamen");
-            String in = inLine.readLine();
-            switch (in) {
-                case "eksamen": {
-                    selectEksamen();
-                    break;
-                }
-                default:
-                    System.out.println("ukendt indtastning");
-            }
+            selectEksamen();
+            stmt.close();
+            minConnection.close();
+        } catch (Exception e) {
+            System.out.println("Fejl: " + e.getMessage());
+            e.printStackTrace();
         }
-        catch (Exception e) {
-            System.out.println("fejl:  "+e.getMessage());
         }
     }
-}
+
