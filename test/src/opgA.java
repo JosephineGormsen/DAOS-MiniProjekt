@@ -84,9 +84,6 @@ public class opgA {
                 stmt.execute(sql);
             }
 
-            // sender insert'en til db-serveren
-            System.out.println("SQL-streng er "+ sql);
-            stmt.execute(sql);
             // pænt svar til brugeren
             System.out.println("Ansættelsen er nu registreret");
             if (!minConnection.isClosed()) minConnection.close();
