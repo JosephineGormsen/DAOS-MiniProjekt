@@ -54,7 +54,6 @@ public class opgA {
             System.out.println("Indtast navn på den studerende som du vil oprette et eksamensforsøg for:");
             String studerendeNavn = inLine.readLine();
 
-            String inString = inLine.readLine();
             String sql = "select studenterID from studerende where navn = '" + studerendeNavn + "'";
             ResultSet res=stmt.executeQuery(sql);
             //gennemløber svaret
@@ -62,27 +61,27 @@ public class opgA {
             while (res.next()) {
                 StudenterID = res.getInt("studenterID");
             }
-            System.out.println(StudenterID);
-            // pæn lukning
-            if (!minConnection.isClosed()) minConnection.close();
-
 
             System.out.println("Indtast hvilken eksamen har " + studerendeNavn + " været oppe i:");
             String eksamenNavn = inLine.readLine();
+
             System.out.println("Mødte den studerende op til eksamenen? (ja/nej)");
             String yesNo = inLine.readLine();
             if (yesNo.toLowerCase().equals("ja")) {
                 System.out.println("Hvilken karakter fik den studerende? (-3, 00, 02, 4, 7, 10, 12");
                 String karakter = inLine.readLine();
-//                String sql = "instert into eksamensAfvikling values('s2024', "
-
-                //insert into eksamensAfvikling values('S2024',1,'2024.04.27','2024.04.29',null,12,2,'FIT intern')
+                sql = "instert into eksamensAfvikling values('s2024', 1, '2024.04.27','2024.04.29', null, " + karakter + ", " + StudenterID + ", " + eksamenNavn + "'";
+                System.out.println("SQL-streng er "+ sql);
+                stmt.execute(sql);
             }
             else {
                 System.out.println("Hvorfor mødte den studerende ikke op?");
                 System.out.println("Indtast koden for grunden til at eksaminationen ikke blev gennemført");
                 System.out.println("SY = Syg \n IM = Ikke mødt op \n IA = ikke afleveret");
                 String ab = inLine.readLine();
+                sql = "instert into eksamensAfvikling values('s2024', 1, '2024.04.27','2024.04.29', null, " + null + ", " + StudenterID + ", " + eksamenNavn + "'";
+                System.out.println("SQL-streng er "+ sql);
+                stmt.execute(sql);
             }
 
             // sender insert'en til db-serveren
@@ -90,6 +89,8 @@ public class opgA {
             stmt.execute(sql);
             // pænt svar til brugeren
             System.out.println("Ansættelsen er nu registreret");
+            if (!minConnection.isClosed()) minConnection.close();
+            // pæn lukning
             if (!minConnection.isClosed()) minConnection.close();
         }
         catch (SQLException e) {
