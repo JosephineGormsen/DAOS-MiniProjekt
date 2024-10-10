@@ -14,9 +14,9 @@ public class opgA {
 
             // Database connection setup
             String server = "localhost"; // Database server
-            String dbnavn = "DAOSMiniProjekt";    // Database name
+            String dbnavn = "karakterDB";    // Database name
             String login = "sa";          // Database login username
-            String password = "reallyStrongPwd123"; // Database login password
+            String password = "SQLpassword1234"; // Database login password
 
             // Load the JDBC driver
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -44,7 +44,6 @@ public class opgA {
             System.out.println("Statement not initialized due to connection failure.");
         }
 
-        inLine = new BufferedReader(new InputStreamReader(System.in));
         insertmedstring();
     }
 
@@ -55,22 +54,18 @@ public class opgA {
             System.out.println("Indtast navn på den studerende som du vil oprette et eksamensforsøg for:");
             String studerendeNavn = inLine.readLine();
 
-            try {
-                String inString = inLine.readLine();
-                // Laver sql-sætning og får den udført
-                String sql = "select studenterID from studerende where navn = '" + studerendeNavn + "'";
-                System.out.println("SQL-streng er "+ sql);
-                ResultSet res=stmt.executeQuery(sql);
-                //gennemløber svaret
-                while (res.next()) {
-                    System.out.println(res.getString(1) + "    " + res.getString(2));
-                }
-                // pæn lukning
-                if (!minConnection.isClosed()) minConnection.close();
+            String inString = inLine.readLine();
+            String sql = "select studenterID from studerende where navn = '" + studerendeNavn + "'";
+            ResultSet res=stmt.executeQuery(sql);
+            //gennemløber svaret
+            int StudenterID = 0;
+            while (res.next()) {
+                StudenterID = res.getInt("studenterID");
             }
-            catch (Exception e) {
-                System.out.println("fejl:  "+e.getMessage());
-            }
+            System.out.println(StudenterID);
+            // pæn lukning
+            if (!minConnection.isClosed()) minConnection.close();
+
 
             System.out.println("Indtast hvilken eksamen har " + studerendeNavn + " været oppe i:");
             String eksamenNavn = inLine.readLine();
@@ -91,7 +86,6 @@ public class opgA {
             }
 
             // sender insert'en til db-serveren
-            String sql = "insert into ansati values ('" + studerendeNavn + "')";
             System.out.println("SQL-streng er "+ sql);
             stmt.execute(sql);
             // pænt svar til brugeren
